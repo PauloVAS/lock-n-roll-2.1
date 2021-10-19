@@ -1,0 +1,1 @@
+yarn run remotedev --port=8000
