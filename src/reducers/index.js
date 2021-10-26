@@ -1,14 +1,14 @@
 import { combineReducers } from 'redux';
 
 import userReducer from './userReducer';
-import serieFormReducer from './serieFormReducer';
-import seriesReducer from './seriesReducer';
+import atividadeFormReducer from './atividadeFormReducer';
+import atividadesReducer from './atividadesReducer';
 import userGoogleReducer from './userGoogleReducer';
 
 export default combineReducers({
 	user: userReducer,
-	serieForm: serieFormReducer,
-	series: seriesReducer,
+	atividadeForm: atividadeFormReducer,
+	atividades: atividadesReducer,
 	userGoogle: userGoogleReducer,
 });
 

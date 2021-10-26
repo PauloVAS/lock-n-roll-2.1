@@ -1,16 +1,20 @@
 {
   "expo": {
-    "name": "series",
-    "slug": "series",
+    "name": "Lock n Roll",
+    "slug": "locknroll",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+   
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash2.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
+      
     },
+   
     "updates": {
+      "enabled": true,
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [

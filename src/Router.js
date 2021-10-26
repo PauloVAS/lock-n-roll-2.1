@@ -2,46 +2,60 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginScreen from './pages/LoginScreen';
-import mainMenu from './pages/mainMenu';
-import SerieDetailPage from './pages/SerieDetailPage';
-import SerieFormPage from './pages/SerieFormPage';
+import AtividadesPage from './pages/AtividadesPage';
+import AtividadeDetailPage from './pages/AtividadeDetailPage';
+import AtividadesFormPage from './pages/AtividadesFormPage';
 import MenuPrincipal from './pages/MenuPrincipal';
-import PaginaAtividades from './pages/Atividades';
 import PaginaAplicativos from './pages/Aplicativos';
 import PaginaControleFoco from './pages/ControleFoco';
 import PaginaGestaoDependentes from './pages/GestaoDependentes';
-
+import PaginaCriarUsuario from './pages/CriarUsuario';
+import PaginaRecuperarSenha from './pages/RecuperarSenha';
 
 const AppNavigator = createStackNavigator ({
   'Login' : {                                
     screen: LoginScreen,
     navigationOptions: {              
-        title: 'Let´s Rock!',
+        title: `Lock 'n' Roll`,
 
     }
   },
-  
-  'LocknRoll': {
-    screen: MenuPrincipal,
-    navigationOptions: {
-        title: 'Choose you destiny!',
-        headerTitleStyle: {
-          textAlign: 'center'
-        }
-    }
-  },
-     
 
-  'Atividades' : {                                 
-    screen: PaginaAtividades,
-    navigationOptions: {            
-        title: 'Gestão de Atividades',
+  'ResetPassword' : {                                
+    screen: PaginaRecuperarSenha,
+    navigationOptions: {              
+        title: 'Recuperar Senha',
         headerTitleStyle: {
           
         }
     }
   },
 
+
+  'NewUser' : {                                
+    screen: PaginaCriarUsuario,
+    navigationOptions: {              
+        title: 'Cadastrar Usuário',
+        headerTitleStyle: {
+          
+        }
+    }
+  },
+  
+  'LocknRoll': {
+    screen: MenuPrincipal,
+    navigationOptions: {
+        title: 'Let´s Rock',
+        headerLeft: ()=> null,
+        
+        // headerTitleStyle: {
+        //   textAlign: 'center'
+        // }
+    }
+  },
+     
+
+  
   'Aplicativos' : {                                 
     screen: PaginaAplicativos,
     navigationOptions: {            
@@ -74,7 +88,7 @@ const AppNavigator = createStackNavigator ({
     
   
   'Main': {
-      screen: mainMenu,
+      screen: AtividadesPage,
       navigationOptions: {
           title: 'Gerenciar Atividades',
           headerTitleStyle: {
@@ -84,11 +98,11 @@ const AppNavigator = createStackNavigator ({
   },
   
   'DetailPage' : {
-      screen: SerieDetailPage,
+      screen: AtividadeDetailPage,
       navigationOptions: ({ navigation }) => {
-          const {serie} = navigation.state.params;
+          const {atividade} = navigation.state.params;
           return {
-              title: serie.title,
+              title: atividade.title,
               headerTitleStyle: {
 
               }
@@ -97,16 +111,16 @@ const AppNavigator = createStackNavigator ({
   
   },
   
-  'SerieForm': {
-    screen: SerieFormPage,
+  'atividadeForm': {
+    screen: AtividadesFormPage,
     navigationOptions: ({ navigation }) => {
-        if (navigation.state.params && navigation.state.params.serieToEdit) {
+        if (navigation.state.params && navigation.state.params.atividadeToEdit) {
           return {
-            title: navigation.state.params.serieToEdit.title,
+            title: navigation.state.params.atividadeToEdit.title,
           }
         }
           return {
-            title: 'CADASTRO',
+            title: 'Cadastro de Atividades',
             headerTitleStyle: {}
           };
        }      
@@ -116,7 +130,7 @@ const AppNavigator = createStackNavigator ({
    
 }, {                                    //SEGUNDO OBJETO ONDE PASSO AS CONFIGURAÇÕES
   defaultNavigationOptions: {          //Vale para todos os headers das telas criadas 
-    title: 'Series!',   //ficará em todas a telas
+    title: 'LocknRoll!',   //ficará em todas a telas
     headerTintColor: 'white',
     headerStyle: {                      //se refere ao componente inteiro de header
       backgroundColor: '#6ca2f7',

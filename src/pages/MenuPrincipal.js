@@ -1,6 +1,6 @@
-import React, { isValidElement } from "react";
-import { StyleSheet, View, Text, FlatList, Image, Dimensions } from "react-native";
-
+import React from "react";
+import { StyleSheet, View, Text, FlatList, Image, Dimensions, Pressable, Alert } from "react-native";
+import firebase from "firebase";
 import MenuCard from "../components/MenuCard";
 
 import menu from '../../menu.json';
@@ -14,26 +14,70 @@ const MenuPrincipal = props => (
     <View>
             {
                 props.userGoogle
-                ?  <Image                
+                ?<Pressable onPress = {() =>  
+                    Alert.alert ('Fazer Logof', 
+                        `Deseja realmente fazer logof do usuário ${props.userGoogle.user.displayName}`,
+                        [{
+                            text: 'Não',    
+                            //onPress: () => (),         
+                            style: 'cancel',                                                 
+                        },{
+                            text: 'Sim',
+                            onPress: async () => {                                
+                                                                
+                                props.navigation.replace('Login');                                                                                                                      
+                               
+                            } 
+                        }],
+                        {cancelable: false}   //obriga o usuario a escolher a opcao do alert                
+                        )                                    
+                }>
+                    <Image                
                         source = {{
                             uri: `${props.userGoogle.user.photoURL}`                        
                         }}
                         style={styles.image}
-                    />                 
-                :   <Image
+                    />   
+
+                </Pressable>  
+                
+                     
+                              
+                :   <Pressable onPress = {() =>  
+                    Alert.alert ('Fazer Logof', 
+                        `Deseja realmente fazer logof do usuário ${props.user.user.email}`,
+                        [{
+                            text: 'Não',    
+                            //onPress: () => (),         
+                            style: 'cancel',                                                 
+                        },{
+                            text: 'Sim',
+                            onPress: () => {
+                                
+                                props.navigation.replace('Login');
+                            }                                          
+                            
+                        }],
+                        {cancelable: false}   //obriga o usuario a escolher a opcao do alert                
+                        )                                    
+                }>
+                    <Image
                         source={require('../../resources/newUser.png')}
                         style={styles.image}
-			        />
+			        />   
+
+                </Pressable>
             }
     
             
             {   
                 props.userGoogle
-                ?   <Text style={styles.label}>Bem vindo {props.userGoogle.user.displayName}!</Text>
+                ?   <Text style={styles.label}>Olá, {props.userGoogle.user.displayName}!</Text>
 
-                :   <Text style={styles.label}>Bem vindo {props.user.user.email}!</Text>
+                :   <Text style={styles.label}>Olá, {props.user.user.email}!</Text>
 
             }
+          
           
                 
 
@@ -74,13 +118,14 @@ const MenuPrincipal = props => (
 const styles = StyleSheet.create ({
     label: {
         fontWeight: 'bold',
-        color: 'grey',
+        color: 'black',
         alignSelf: 'center',
-        fontSize: 15
+        fontSize: 18
     },
     
     container: {
         flex: .5
+
 
     },
     marginBottom: {
@@ -88,7 +133,7 @@ const styles = StyleSheet.create ({
 
     },
     marginTop: {
-        marginTop: 5
+        marginTop: 15
 
     },
 
@@ -99,20 +144,21 @@ const styles = StyleSheet.create ({
        
         marginTop: 20,
         marginBottom: 10,
-        borderRadius: 50
+        borderRadius: 30
         
     },   
 
 
 
 })
-const mapStateToProps = state => {
+const mapStateToProps = state => {    
     const { user } = state;
     if (user == null) {
         const { userGoogle } = state;
         return {userGoogle};
 
     }else{
+
         return { user };
 
     }
@@ -121,3 +167,6 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps) (MenuPrincipal);
+
+
+// export default connect (null, {tryLogin, tryLoginGoogle} || {actionCreator})(LoginPage)

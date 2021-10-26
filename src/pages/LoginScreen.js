@@ -6,7 +6,9 @@ import { tryLogin } from "../actions";
 import { connect } from "react-redux";
 import * as Google from 'expo-google-app-auth'
 import {tryLoginGoogle} from "../actions";
-
+import { signOutGoogle} from "../actions";
+import { signOutUser} from "../actions";
+import {limparAtividades} from "../actions";
 
 
 class LoginPage extends React.Component {
@@ -19,7 +21,7 @@ class LoginPage extends React.Component {
             isLoadingGoogle: false,
             message: '',        //guarda mensagem de erro que será mostrada ao usuario
             pass: true,           // ok para autenticação certa
-            
+            usuarioNovo: false,
         }
     }
 
@@ -27,20 +29,24 @@ class LoginPage extends React.Component {
  
     handleGoogleSignin = async() => {
         this.setState ({isLoadingGoogle: true, message: ''});
-        setTimeout (() => {
+        this.props.signOutGoogle();
+        this.props.signOutUser();
+        this.props.limparAtividades();       
+        
+        setTimeout (() => {           
 
             const config = {
                 androidClientId:`768166117592-c7ak2k3fajsg86nsakovg8tav7r5up7d.apps.googleusercontent.com`,
                 //ClientId:`768166117592-26f7n2satp7dq49utbifs9o8cr3ib7s8.apps.googleusercontent.com`,
+                androidStandaloneAppClientId:`768166117592-0eh2jio56pgqsko1cvv733r7kluush43.apps.googleusercontent.com`,
                 scopes: ['profile', 'email']
-            };
-                
+            };            
+            
             Google
                 .logInAsync(config)
                 .then ((result) => {
-                    const {type, accessToken, idToken, user} = result;
-                                   
-                    console.log(result)
+                    const {type, accessToken, idToken, user} = result;                   
+                                        
                     if (type === 'success'){
                         const {email, name, photoUrl, id} = user;
                         
@@ -49,7 +55,8 @@ class LoginPage extends React.Component {
                         .then(userGoogle => {
                             
                             if (userGoogle) {
-                                return this.props.navigation.replace('LocknRoll');                                                             
+                                return this.props.navigation.replace('LocknRoll'); 
+                                                                                       
                             }      
                             this.setState ({
                                 isLoadingGoogle: false,     
@@ -57,9 +64,9 @@ class LoginPage extends React.Component {
                             });                                                                
                         })
                         .catch (error => {
-                            console.log ('catch da login page', error.code);
+                            
                             this.setState ({
-                                isLoadingGoogle: false, 
+                                isLoadingGoogle: false,                               
                                 message: this.getMessageByErrorCode(error.code)                                
                             });
                         })
@@ -71,17 +78,17 @@ class LoginPage extends React.Component {
                     }else {
                         this.setState ({
                             isLoadingGoogle: false, 
-                                                            
+                            message: 'Login do Google foi cancelado',                               
                         });
-                        console.log('Login do Google foi cancelado');
+                        
                     }                    
                 })
                 .catch(error => {
                     this.setState ({
-                        isLoadingGoogle: false, 
-                        message: this.getMessageByErrorCode(error.code)                                
-                    });
-                    console.log(error)
+                        isLoadingGoogle: false,                         
+                        message: this.getMessageByErrorCode(error.code)
+                                                        
+                    });                    
                     
                 })
         },1500)       
@@ -89,6 +96,7 @@ class LoginPage extends React.Component {
     }   
 
     componentDidMount() {
+        
         const config = {
             apiKey: "AIzaSyBx0mGSdSxyuN2PRoeJgh6qjaXIIMvLCr4",
             authDomain: "locknroll-22a.firebaseapp.com",
@@ -98,7 +106,8 @@ class LoginPage extends React.Component {
             appId: "1:768166117592:web:e35495da0571c4d55097ad",
             measurementId: "G-R6MWY3LJJG"
         };
-        !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();   //para erro do hotreload         
+        !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();   //para erro do hotreload  
+               
     }
 
   
@@ -115,11 +124,14 @@ class LoginPage extends React.Component {
    
     tryLogin () {
         this.setState ({isLoading: true, message: '', pass: false});
+        this.props.signOutGoogle();
+        this.props.signOutUser();
+        this.props.limparAtividades();
         setTimeout (() => {
             //console.log (this.state);
-            const {mail: email, password} = this.state;
-
-            this.props.tryLogin ({email, password})        //aqui chamo a action creator, que não devolve apenas um abjeto, ela consegue fazer ações através do redux thunk 
+            const {mail: email, password, usuarioNovo} = this.state;
+            
+            this.props.tryLogin ({email, password, usuarioNovo})        //aqui chamo a action creator, que não devolve apenas um abjeto, ela consegue fazer ações através do redux thunk 
                 .then(user => {
                     console.log(user);
                     //this.setState ({ message: 'Sucesso!', pass: true});    // pass é variavel para formatacao verde
@@ -158,7 +170,7 @@ class LoginPage extends React.Component {
 //         message: this.getMessageByErrorCode(error)
 //     });
 
-    getMessageByErrorCode (errorCode){
+    getMessageByErrorCode (errorCode){        
         switch (errorCode) {
             case 'auth/wrong-password': 
                 return 'Senha incorreta!';
@@ -171,34 +183,13 @@ class LoginPage extends React.Component {
         }
     }
 
-    // Alert.alert('Deletar',
-    //         `Deseja deletar a série ${serieToDelete.title}`,
-    //         [{
-    //             text: 'Não',
-    //             onPress: () => {
-    //                 resolve(false);
-    //             },
-    //             style: 'cancel'
-
-
-
+  
     renderMessage () {
         const { message, pass } = this.state;
         if (!message)                       //if not, se não tiver nada na mensagem, não renderiza nada
             return null;
-        return (
-            // Alert.alert('Mensagem de Erro!', `${message}`, [{
-            //     text: 'OK',
-            //     onPress: () => {
-            //         this.setState ({
-            //             isLoading: false,      
-            //             message: ''
-            //         }); 
-            //     }
-
-            // }])
-           
-            
+        return (       
+                       
             <View >
                 <Text style = {[styles.error, pass ? styles.pass : null]}>{message}</Text> 
             </View>            
@@ -212,7 +203,7 @@ class LoginPage extends React.Component {
             <View style = {styles.container}>
 
                 <Image
-                    source={require('../../resources/foco.png')}
+                    source={require('../../resources/locklogoPB2.png')}
                     style={styles.image}
                 />
 
@@ -255,11 +246,11 @@ class LoginPage extends React.Component {
         
                     <View style = {styles.sameRow}>
 
-                        <Pressable onPress={() => this.tryLogin()}>
+                        <Pressable onPress={() => this.props.navigation.navigate('NewUser')}>
                             <Text style = {styles.links}>Registrar</Text>
                         </Pressable> 
 
-                        <Pressable onPress={() => this.tryLogin()}>
+                        <Pressable onPress={() => this.props.navigation.navigate('ResetPassword')}>
                             <Text style = {styles.links}>Esqueceu a senha</Text>
                         </Pressable>                        
                                     
@@ -340,18 +331,18 @@ const styles = StyleSheet.create ({
 	    alignSelf: 'center',
 		aspectRatio: 1,
         height: Dimensions.get('window').width / 4,
-       
+        borderRadius: 30,
         marginTop: 40,
-        marginBottom: 30,
+        marginBottom: 20,
         
     },  
     imageFoot: {
         alignSelf: 'center',
-        width: '90%',
+        width: '10%',
 		height: Dimensions.get('window').width / 6,
         aspectRatio: 1,
 		marginTop: 10,
-        marginBottom: 50,
+        marginBottom: 10,
         
     },
 
@@ -392,7 +383,7 @@ const styles = StyleSheet.create ({
         paddingVertical: 12,
         paddingHorizontal: 32,
         borderRadius: 20,
-        elevation: 3,
+        elevation: 10,
         backgroundColor: '#3fa5d1',
         paddingLeft: 40,
         paddingRight: 40,
@@ -410,7 +401,7 @@ const styles = StyleSheet.create ({
         color: 'red',
         alignSelf: 'center',
         fontSize: 15,
-        paddingTop: 5
+        paddingTop: 10
         
     },
 
@@ -427,4 +418,4 @@ const delay = ms => new Promise ((resolve, reject) => {
 
 });
 //export default connect (mapStateToProps, mapDispatchToProps || {actionCreator})(LoginPage)
-export default connect (null, {tryLogin, tryLoginGoogle} || {actionCreator})(LoginPage)
+export default connect (null, {tryLogin, tryLoginGoogle, signOutGoogle, signOutUser, limparAtividades } || {actionCreator})(LoginPage)

@@ -13,6 +13,19 @@ const userGoogleLogout = () => ({
     
 });
 
+export const signOutGoogle = () => async dispatch => {
+    return firebase
+        .auth()
+        .signOut()
+        .then(() => {
+            const action = userGoogleLogout();
+            dispatch(action);
+           
+        })
+        
+}
+
+
 
 export const tryLoginGoogle = (credencial) => async dispatch => {
     return firebase

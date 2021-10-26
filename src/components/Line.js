@@ -7,7 +7,7 @@ const Line = ({label = '', content = ''}) => {
                     <Text style = {[
                         styles.cell, 
                         styles.label, 
-                        label.length > 8 ? styles.longLabel : null
+                        label.length > 9 ? styles.longLabel : null
                         ]}>{ label }</Text> 
                     <Text style = {[
                         styles.cell, 
@@ -26,8 +26,11 @@ const styles = StyleSheet.create ({
         flexDirection: 'row',
         paddingTop: 3,
         paddingBottom: 3,
-        borderWidth: 1,
+        borderWidth: .5,
         borderColor: '#C5C5C5',
+        paddingLeft: 5,
+        paddingRight: 5
+        
 
     },
 
